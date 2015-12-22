@@ -1,0 +1,27 @@
+{
+  "name": "@naujs/util",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/naujs/util.git"
+  },
+  "author": "Tan Nguyen",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/naujs/util/issues"
+  },
+  "homepage": "https://github.com/naujs/util#readme",
+  "devDependencies": {
+    "@naujs/gulp-tasks": "latest",
+    "gulp": "^3.9.0"
+  },
+  "dependencies": {
+    "lodash": "^3.10.1",
+    "underscore.string": "^3.2.2"
+  }
+}
