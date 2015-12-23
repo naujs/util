@@ -1,6 +1,6 @@
 {
   "name": "@naujs/util",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -21,6 +21,7 @@
     "gulp": "^3.9.0"
   },
   "dependencies": {
+    "bluebird": "^3.1.1",
     "lodash": "^3.10.1",
     "underscore.string": "^3.2.2"
   }
