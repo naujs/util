@@ -1,5 +1,8 @@
+'use strict';
+
 var _ = require('lodash')
-  , _s = require('underscore.string');
+  , _s = require('underscore.string')
+  , EventEmitter = require('events');
 
 var globalNamespace;
 detechGlobalNamespace();
@@ -14,20 +17,20 @@ function detechGlobalNamespace() {
   }
 }
 
-module.exports = {
-  NODE: Symbol('node'),
-  BROWSER: Symbol('browser'),
+const NODE = Symbol('node');
+const BROWSER = Symbol('browser');
 
+class Util extends EventEmitter {
   // internal methods intended for testing purposes
   __refreshGlobalNamespace() {
     detechGlobalNamespace();
-  },
+  }
 
   getGlobalVariable(attr, defaultValue = null) {
     return typeof globalNamespace[attr] !== 'undefined'
             ? globalNamespace[attr]
             : defaultValue;
-  },
+  }
 
   setupExports(dir, options = {}) {
     options = _.defaults(options, {
@@ -54,29 +57,33 @@ module.exports = {
     }
 
     return exports;
-  },
+  }
+
+  // Promise
 
   getPromise() {
     return this.getGlobalVariable('Promise', require('bluebird'));
-  },
+  }
+
+  // Cross-runtime thingy
 
   getRuntime() {
     if (typeof window !== 'undefined') {
-      return this.BROWSER;
+      return BROWSER;
     } else if (typeof global !== 'undefined') {
-      return this.NODE;
+      return NODE;
     } else {
       throw 'Unable to find global namespace';
     }
-  },
+  }
 
   isNode() {
-    return this.getRuntime() == this.NODE;
-  },
+    return this.getRuntime() == NODE;
+  }
 
   isBrowser() {
-    return this.getRuntime() == this.BROWSER;
-  },
+    return this.getRuntime() == BROWSER;
+  }
 
   getEnv(attr) {
     if (this.isNode()) {
@@ -85,4 +92,6 @@ module.exports = {
       return this.getGlobalVariable(attr.toUpperCase());
     }
   }
-};
+}
+
+module.exports = new Util();
