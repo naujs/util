@@ -65,6 +65,17 @@ class Util extends EventEmitter {
     return this.getGlobalVariable('Promise', require('bluebird'));
   }
 
+  tryPromise(value) {
+    if (_.isFunction(value.then)) {
+      return value;
+    }
+
+    let Promise = this.getPromise();
+    return new Promise((resolve) => {
+      resolve(value);
+    });
+  }
+
   // Cross-runtime thingy
 
   getRuntime() {

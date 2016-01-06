@@ -1,6 +1,6 @@
 {
   "name": "@naujs/util",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -17,7 +17,7 @@
   },
   "homepage": "https://github.com/naujs/util#readme",
   "devDependencies": {
-    "@naujs/gulp-tasks": "latest",
+    "@naujs/gulp-tasks": "0.0.12",
     "gulp": "^3.9.0"
   },
   "dependencies": {
