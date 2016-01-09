@@ -89,6 +89,18 @@ var Util = (function (_EventEmitter) {
     value: function getPromise() {
       return this.getGlobalVariable('Promise', require('bluebird'));
     }
+  }, {
+    key: 'tryPromise',
+    value: function tryPromise(value) {
+      if (_.isFunction(value.then)) {
+        return value;
+      }
+
+      var Promise = this.getPromise();
+      return new Promise(function (resolve) {
+        resolve(value);
+      });
+    }
 
     // Cross-runtime thingy
 
