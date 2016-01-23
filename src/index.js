@@ -76,6 +76,21 @@ class Util extends EventEmitter {
     });
   }
 
+  eachPromise(promises, progress) {
+    let promise = promises.shift();
+
+    return this.tryPromise(promise).then((result) => {
+      if (progress) {
+        progress(result);
+      }
+
+      if (promises.length) {
+        return this.eachPromise(promises, progress);
+      }
+      return result;
+    });
+  }
+
   // Cross-runtime thingy
 
   getRuntime() {

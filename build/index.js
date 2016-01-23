@@ -101,6 +101,24 @@ var Util = function (_EventEmitter) {
         resolve(value);
       });
     }
+  }, {
+    key: 'eachPromise',
+    value: function eachPromise(promises, progress) {
+      var _this2 = this;
+
+      var promise = promises.shift();
+
+      return this.tryPromise(promise).then(function (result) {
+        if (progress) {
+          progress(result);
+        }
+
+        if (promises.length) {
+          return _this2.eachPromise(promises, progress);
+        }
+        return result;
+      });
+    }
 
     // Cross-runtime thingy
 

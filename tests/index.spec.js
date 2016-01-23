@@ -11,7 +11,7 @@ function setupBrowserTest() {
 }
 
 describe('util', () => {
-  describe('.setupExports', () => {
+  describe('#setupExports', () => {
     it('should automatically grab all files in a folder', () => {
       var e = util.setupExports(__dirname + '/setup_exports');
       expect(e.methodName).toBeDefined();
@@ -39,7 +39,7 @@ describe('util', () => {
     });
   });
 
-  describe('.getGlobalVariable', () => {
+  describe('#getGlobalVariable', () => {
     beforeEach(() => {
       global.test = 'test';
     });
@@ -57,13 +57,13 @@ describe('util', () => {
     afterEach(cleanUpBrowserTest);
   });
 
-  describe('.isNode', () => {
+  describe('#isNode', () => {
     it('should detect node runtime', () => {
       expect(util.isNode()).toBe(true);
     });
   });
 
-  describe('.isBrowser', () => {
+  describe('#isBrowser', () => {
     beforeEach(setupBrowserTest);
 
     it('should detect browser runtime', () => {
@@ -73,7 +73,7 @@ describe('util', () => {
     afterEach(cleanUpBrowserTest);
   });
 
-  describe('.getEnv', () => {
+  describe('#getEnv', () => {
     beforeEach(() => {
       process.env.TEST = 'node';
     });
@@ -89,5 +89,50 @@ describe('util', () => {
     });
 
     afterEach(cleanUpBrowserTest);
+  });
+
+  describe('#eachPromise', () => {
+    var Promise;
+
+    beforeEach(() => {
+      Promise = util.getPromise();
+    });
+
+    it('should execute each promise in the provided order', (done) => {
+      var results = [];
+      var promises = [
+        Promise.resolve(0).then((result) => {
+          results.push(result);
+        }),
+        Promise.resolve(2).then((result) => {
+          results.push(result);
+        }),
+        Promise.resolve(1).then((result) => {
+          results.push(result);
+          return result;
+        }),
+      ];
+
+      util.eachPromise(promises).then((result) => {
+        expect(result).toBe(1);
+        expect(results).toEqual([0, 2, 1]);
+      }).then(done, fail);
+    });
+
+    it('should call progress function after each promise execution', (done) => {
+      var progress = jasmine.createSpy('progress');
+      var promises = [
+        Promise.resolve(0),
+        Promise.resolve(2),
+        Promise.resolve(1)
+      ];
+
+      util.eachPromise(promises, progress).then((result) => {
+        expect(progress.calls.count()).toBe(3);
+        expect(progress.calls.argsFor(0)).toEqual([0]);
+        expect(progress.calls.argsFor(1)).toEqual([2]);
+        expect(progress.calls.argsFor(2)).toEqual([1]);
+      }).then(done, fail);
+    });
   });
 });
