@@ -97,7 +97,10 @@ var Util = function (_EventEmitter) {
       }
 
       var Promise = this.getPromise();
-      return new Promise(function (resolve) {
+      return new Promise(function (resolve, reject) {
+        if (value instanceof Error) {
+          return reject(value);
+        }
         resolve(value);
       });
     }

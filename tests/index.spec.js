@@ -134,5 +134,20 @@ describe('util', () => {
         expect(progress.calls.argsFor(2)).toEqual([1]);
       }).then(done, fail);
     });
+
+    it('should stop when there is a rejection', (done) => {
+      var progress = jasmine.createSpy('progress');
+      var promises = [
+        Promise.resolve(0),
+        Promise.reject(2),
+        Promise.resolve(1)
+      ];
+
+      util.eachPromise(promises, progress).then(fail, (error) => {
+        expect(error).toBe(2);
+        expect(progress.calls.count()).toBe(1);
+        expect(progress.calls.argsFor(0)).toEqual([0]);
+      }).then(done);
+    });
   });
 });

@@ -71,7 +71,10 @@ class Util extends EventEmitter {
     }
 
     let Promise = this.getPromise();
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
+      if (value instanceof Error) {
+        return reject(value);
+      }
       resolve(value);
     });
   }
