@@ -150,4 +150,27 @@ describe('util', () => {
       }).then(done);
     });
   });
+
+  describe('#defer', () => {
+    it('should return a deferred object', (done) => {
+      var deferred = util.defer();
+
+      deferred.promise.then((result) => {
+        expect(result).toEqual(1);
+      }).then(done, fail);
+
+      deferred.resolve(1);
+    });
+
+    it('should allow rejection', (done) => {
+      var deferred = util.defer();
+
+      deferred.promise.then(fail, (error) => {
+        expect(error).toEqual(1);
+      }).then(done);
+
+      deferred.reject(1);
+    });
+  });
+
 });

@@ -94,6 +94,17 @@ class Util extends EventEmitter {
     });
   }
 
+  defer() {
+    let deferred = {};
+    let promise = new Promise((resolve, reject) => {
+      deferred.resolve = resolve;
+      deferred.reject = reject;
+    });
+
+    deferred.promise = promise;
+    return deferred;
+  }
+
   // Cross-runtime thingy
 
   getRuntime() {
