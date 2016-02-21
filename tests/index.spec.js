@@ -91,6 +91,38 @@ describe('util', () => {
     afterEach(cleanUpBrowserTest);
   });
 
+  describe('#tryPromise', () => {
+    it('should convert normal value into a promise resolving to that value', () => {
+      function fn() {
+        return 1;
+      };
+
+      return util.tryPromise(fn()).then(function(result) {
+        expect(result).toEqual(1);
+      });
+    });
+
+    it('should handle undefined', () => {
+      function fn() {};
+
+      return util.tryPromise(fn()).then(function(result) {
+        expect(result).toBeUndefined();
+      });
+    });
+
+    it('should reject if having an instance of Error', () => {
+      function fn() {
+        return new Error('test');
+      };
+
+      return util.tryPromise(fn()).then(function(result) {
+        throw 'Should not resolve';
+      }, function(err) {
+        expect(err.message).toEqual('test');
+      });
+    });
+  });
+
   describe('#eachPromise', () => {
     var Promise;
 

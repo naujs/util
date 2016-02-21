@@ -66,7 +66,7 @@ class Util extends EventEmitter {
   }
 
   tryPromise(value) {
-    if (_.isFunction(value.then)) {
+    if (value && _.isFunction(value.then)) {
       return value;
     }
 

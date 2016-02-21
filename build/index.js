@@ -92,7 +92,7 @@ var Util = function (_EventEmitter) {
   }, {
     key: 'tryPromise',
     value: function tryPromise(value) {
-      if (_.isFunction(value.then)) {
+      if (value && _.isFunction(value.then)) {
         return value;
       }
 
