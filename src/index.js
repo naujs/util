@@ -79,18 +79,24 @@ class Util extends EventEmitter {
     });
   }
 
-  eachPromise(promises, progress) {
-    let promise = promises.shift();
+  eachPromise(values, process) {
+    if (!process || !_.isFunction(process)) {
+      throw `Must provide a function`;
+    }
 
-    return this.tryPromise(promise).then((result) => {
-      if (progress) {
-        progress(result);
-      }
+    let value = values.shift();
 
-      if (promises.length) {
-        return this.eachPromise(promises, progress);
-      }
-      return result;
+    if (value === void(0)) {
+      return this.getPromise().resolve(null);
+    }
+
+    return this.tryPromise(value).then((result) => {
+      return this.tryPromise(process(result)).then((d) => {
+        if (values.length) {
+          return this.eachPromise(values, process);
+        }
+        return null;
+      });
     });
   }
 

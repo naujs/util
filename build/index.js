@@ -106,20 +106,22 @@ var Util = function (_EventEmitter) {
     }
   }, {
     key: 'eachPromise',
-    value: function eachPromise(promises, progress) {
+    value: function eachPromise(values, process) {
       var _this2 = this;
 
-      var promise = promises.shift();
+      if (!process || !_.isFunction(process)) {
+        throw 'Must provide a function';
+      }
 
-      return this.tryPromise(promise).then(function (result) {
-        if (progress) {
-          progress(result);
-        }
+      var value = values.shift();
 
-        if (promises.length) {
-          return _this2.eachPromise(promises, progress);
-        }
-        return result;
+      return this.tryPromise(value).then(function (result) {
+        return _this2.tryPromise(process(result)).then(function (d) {
+          if (values.length) {
+            return _this2.eachPromise(values, process);
+          }
+          return d;
+        });
       });
     }
   }, {

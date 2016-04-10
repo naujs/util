@@ -123,14 +123,14 @@ describe('util', () => {
     });
   });
 
-  describe('#eachPromise', () => {
+  fdescribe('#eachPromise', () => {
     var Promise;
 
     beforeEach(() => {
       Promise = util.getPromise();
     });
 
-    it('should execute each promise in the provided order', (done) => {
+    it('should execute each promise in the provided order', () => {
       var results = [];
       var promises = [
         Promise.resolve(0).then((result) => {
@@ -145,41 +145,61 @@ describe('util', () => {
         }),
       ];
 
-      util.eachPromise(promises).then((result) => {
-        expect(result).toBe(1);
+      return util.eachPromise(promises, () => {
+
+      }).then((result) => {
         expect(results).toEqual([0, 2, 1]);
-      }).then(done, fail);
+      });
     });
 
-    it('should call progress function after each promise execution', (done) => {
-      var progress = jasmine.createSpy('progress');
+    it('should call process function after each promise execution', () => {
+      var process = jasmine.createSpy('process');
       var promises = [
         Promise.resolve(0),
         Promise.resolve(2),
         Promise.resolve(1)
       ];
 
-      util.eachPromise(promises, progress).then((result) => {
-        expect(progress.calls.count()).toBe(3);
-        expect(progress.calls.argsFor(0)).toEqual([0]);
-        expect(progress.calls.argsFor(1)).toEqual([2]);
-        expect(progress.calls.argsFor(2)).toEqual([1]);
-      }).then(done, fail);
+      return util.eachPromise(promises, process).then((result) => {
+        expect(process.calls.count()).toBe(3);
+        expect(process.calls.argsFor(0)).toEqual([0]);
+        expect(process.calls.argsFor(1)).toEqual([2]);
+        expect(process.calls.argsFor(2)).toEqual([1]);
+      });
     });
 
-    it('should stop when there is a rejection', (done) => {
-      var progress = jasmine.createSpy('progress');
+    it('should stop when there is a rejection', () => {
+      var process = jasmine.createSpy('process');
       var promises = [
         Promise.resolve(0),
         Promise.reject(2),
         Promise.resolve(1)
       ];
 
-      util.eachPromise(promises, progress).then(fail, (error) => {
+      return util.eachPromise(promises, process).then(fail, (error) => {
         expect(error).toBe(2);
-        expect(progress.calls.count()).toBe(1);
-        expect(progress.calls.argsFor(0)).toEqual([0]);
-      }).then(done);
+        expect(process.calls.count()).toBe(1);
+        expect(process.calls.argsFor(0)).toEqual([0]);
+      });
+    });
+
+    it('should support an array of values', () => {
+      var results = [];
+      var values = [
+        1,
+        2,
+        3
+      ];
+
+      return util.eachPromise(values, (value) => {
+        results.push(value * value);
+      }).then(() => {
+        expect(results).toEqual([
+          1,
+          4,
+          9
+        ]);
+      });
     });
   });
 
